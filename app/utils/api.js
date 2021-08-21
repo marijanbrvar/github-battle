@@ -1,4 +1,4 @@
-const fetchPopularLanguage = async (language) => {
+const fetchPopularRepos = async (language) => {
   const endpoint = window.encodeURI(`https://api.github.com/search/repositories?q=stars:>1+language:${language}&sort=stars&order=desc&type=Repositories`)
   const rawData = await fetch(endpoint)
   const data = await rawData.json()
@@ -10,4 +10,4 @@ const fetchPopularLanguage = async (language) => {
   return data.items
 }
 
-export default fetchPopularLanguage;
+export default fetchPopularRepos;
