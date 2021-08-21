@@ -9,36 +9,46 @@ export default class Popular extends Component {
     this.state = {
       selectedLanguage: 'All',
       error: null,
-      repos: null,
+      repos: {},
     }
 
     this.updateLanguage = this.updateLanguage.bind(this);
     this.isLoading =this.isLoading.bind(this);
   }
-  componentDidMount() {
-    this.updateLanguage(this.state.selectedLanguage)
-  }
+  // componentDidMount() {
+  //   this.updateLanguage(this.state.selectedLanguage)
+  // }
   updateLanguage (selectedLanguage) {
     this.setState({
       selectedLanguage,
-      error: null,
-      repos: null
-    })
-
-    fetchPopularLanguage(selectedLanguage).then((repos) => this.setState({
-      repos,
       error: null
-    })).catch(() => {
-      console.warn('Error fatching repos', error);
-
-      this.setState({
-        error: 'There was an error fetching repositories!'
-      })
     })
-  }
+
+    if (!this.state.repos[selectedLanguage]) {
+      console.log(selectedLanguage);
+      fetchPopularRepos(selectedLanguage)
+      .then((data) => {
+        this.setState(({repos}) => ({
+          repos: {
+            ...repos,
+            [selectedLanguage]: data
+          }
+        }))
+      })
+      .catch(() => {
+        console.warn('Error fatching repos', error);
+  
+        this.setState({
+          error: 'There was an error fetching repositories!'
+        })
+      })
+      } 
+    }
 
   isLoading() {
-    return this.state.repos === null && this.state.error === null;
+    const { selectedLanguage, error, repos } = this.state
+
+    return !repos[selectedLanguage] && error === null
   }
 
   render() {
@@ -55,7 +65,7 @@ export default class Popular extends Component {
 
         {error && <p>{error}</p>}
 
-        {repos && <pre>{JSON.stringify(repos, null, 2)}</pre>}
+        {repos[selectedLanguage] && <pre>{JSON.stringify(repos[selectedLanguage], null, 2)}</pre>}
       </>
     )
   }
