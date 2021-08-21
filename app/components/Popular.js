@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import LanguagesNav from './ui/LanguagesNav';
-import fetchPopularLanguage from "../utils/api";
+import fetchPopularRepos from "../utils/api";
 
 export default class Popular extends Component {
   constructor(props) {
